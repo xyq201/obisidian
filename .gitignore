@@ -1,0 +1,13 @@
+# Obsidian 本地工作区缓存（仅本机，不入库）
+.obsidian/workspace
+.obsidian/workspace.json
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+~*
+
+# 大附件按需自行决定是否入库
