@@ -1,0 +1,20 @@
+{
+  "autoPull": true,
+  "autoPush": true,
+  "pullBeforePush": true,
+  "syncMethod": "rebase",
+  "pullInterval": 10,
+  "pushInterval": 10,
+  "autoPushOnClose": true,
+  "commitMessage": "kb: {{date}} {{hostname}} 自动同步",
+  "autoCommitMessage": "kb: {{date}} {{hostname}} 自动同步",
+  "commitBody": "",
+  "listChangedFilesInMessageBody": false,
+  "disableAppendPluginVersionToCommit": true,
+  "showStatusBar": true,
+  "refreshSourceControl": true,
+  "disablePush": false,
+  "disablePull": false,
+  "refreshOnLoad": true,
+  "syncOnFileChange": false
+}
