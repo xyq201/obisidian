@@ -19,31 +19,39 @@ git config http.lowSpeedLimit 0 2>/dev/null
 git config http.lowSpeedTime 0 2>/dev/null
 git config http.postBuffer 524288000 2>/dev/null
 
-# ---- 1. 沙箱 DNS/代理自愈：确保 github.com 解析到出网代理放行的真实 IP ----
+# ---- 1. 沙箱 DNS/代理自愈：动态探测出网代理放行的 GitHub 前端 IP 并覆盖写 ----
 ensure_hosts() {
-  local need_fix=0
-  if ! getent hosts github.com | grep -q "140.82.113.3"; then need_fix=1; fi
-  if [ "$need_fix" -eq 1 ]; then
-    echo "[sync] 检测到 github.com 解析异常，写入真实 IP 自愈..."
-    # 同时写 /etc/hosts 与持久化的 ~/.user_hosts（/etc/hosts 重启会被还原）
-    grep -q "github.com" /etc/hosts 2>/dev/null && \
-      sed -i 's/^[^#].*github\.com.*/140.82.113.3     github.com/' /etc/hosts || \
-      echo "140.82.113.3     github.com" >> /etc/hosts
-    cat >> ~/.user_hosts <<'EOF'
-
-# GitHub 真实 IP（sync-obsidian-kb.sh 自动补全，绕过沙箱 DNS 污染）
-140.82.113.3     github.com
-140.82.113.5     api.github.com
-140.82.113.6     api.github.com
-140.82.113.4     gist.github.com
-140.82.113.9     codeload.github.com
-185.199.108.133  objects.githubusercontent.com
-185.199.109.133  objects.githubusercontent.com
-185.199.110.133  objects.githubusercontent.com
-185.199.111.133  objects.githubusercontent.com
-EOF
-    echo "[sync] hosts 已修复"
+  local cur; cur=$(getent hosts github.com 2>/dev/null | awk '{print $1; exit}')
+  # 候选放行 IP（代理放行网段，随出网策略可增减）
+  local cands="140.82.114.3 140.82.116.3 140.82.121.3 140.82.112.3 140.82.113.3 140.82.113.5 140.82.113.6"
+  local ok=""
+  # 先测当前解析是否可达
+  if [ -n "$cur" ] && curl -sS -m 10 --resolve "github.com:443:$cur" -o /dev/null "https://github.com" 2>/dev/null; then
+    ok="$cur"
   fi
+  # 否则遍历候选，挑第一个可达的
+  if [ -z "$ok" ]; then
+    local ip
+    for ip in $cands; do
+      if curl -sS -m 8 --resolve "github.com:443:$ip" -o /dev/null "https://github.com" 2>/dev/null; then ok="$ip"; break; fi
+    done
+  fi
+  if [ -z "$ok" ]; then
+    echo "[sync] 警告：所有候选 IP 均不可达，保留原解析（github.com=$cur）。" >&2
+    return 0
+  fi
+  if [ "$cur" = "$ok" ]; then return 0; fi
+  echo "[sync] 自愈：github.com $cur -> $ok"
+  local tmp; tmp=$(mktemp)
+  # /etc/hosts 为 bind mount，sed -i 不可用，改用"过滤旧行 + 追加 + 覆盖写"
+  awk '$2!="github.com"' /etc/hosts > "$tmp" 2>/dev/null || true
+  echo "$ok    github.com" >> "$tmp"
+  cat "$tmp" > /etc/hosts
+  awk '$2!="github.com"' ~/.user_hosts > "$tmp" 2>/dev/null || true
+  echo "$ok    github.com" >> "$tmp"
+  cat "$tmp" > ~/.user_hosts
+  rm -f "$tmp"
+  echo "[sync] hosts 已修复为 $ok"
 }
 
 # ---- 2. 连通性自检 ----
@@ -54,11 +62,29 @@ check_conn() {
   fi
 }
 
+# ---- 2.5 确保 gh 已登录（自动化独立会话可能无登录态）----
+ensure_gh() {
+  if gh auth status >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "[sync] 检测到 gh 未登录，尝试自动登录..."
+  local tok="${GITHUB_PAT:-}"
+  if [ -z "$tok" ] && [ -f "$HOME/.github_pat" ]; then tok="$(cat "$HOME/.github_pat")"; fi
+  if [ -z "$tok" ]; then
+    echo "[sync] 错误：无 GITHUB_PAT 且 ~/.github_pat 不存在，无法登录 GitHub。" >&2
+    exit 5
+  fi
+  printf '%s' "$tok" | gh auth login --with-token 2>&1 | head -3
+  gh auth setup-git 2>&1 | head -1
+  echo "[sync] gh 自动登录完成"
+}
+
 MODE="${1:-sync}"
 MSG="${2:-kb: 自动同步 $(date +%F)}"
 
 ensure_hosts
 check_conn
+ensure_gh
 
 case "$MODE" in
   pull)
