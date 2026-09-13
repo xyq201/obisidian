@@ -114,5 +114,12 @@
       ]
     }
   ],
-  "footer": "MDPI Cosmetics 2026,13(3),102（皮肤-脑轴综述）；Science 2026-03 Vol 391:1208（应激神经-免疫环路）；Wiley J Cosmet Dermatol 2024（慢性应激致皮肤老化临床）；personalcareinsights / Givaudan Active Beauty 2026（神经化妆品市场）；《皮肤科学与化妆品功效评价》（刘玮）、《Cosmeceuticals》（活性物机制）"
+  "footer": "MDPI Cosmetics 2026,13(3),102（皮肤-脑轴综述）；Science 2026-03 Vol 391:1208（应激神经-免疫环路）；Wiley J Cosmet Dermatol 2024（慢性应激致皮肤老化临床）；personalcareinsights / Givaudan Active Beauty 2026（神经化妆品市场）；《皮肤科学与化妆品功效评价》（刘玮）、《Cosmeceuticals》（活性物机制）",
+  "references": [
+    {"title": "MDPI Cosmetics 2026 综述：Neurocosmetics and the Skin-Brain Axis（13(3):102）", "url": "https://www.mdpi.com/2079-9284/13/3/102"},
+    {"title": "家庭医生在线：解锁「神经化妆品」——皮肤与大脑的情绪对话", "url": "https://www.familydoctor.cn/news/peizhi-yuyue-meigan-jiesuo-shenjing-huazhuangpin-pifu-danao-403919.html"},
+    {"title": "Science：应激神经环路放大皮肤炎症（ neuronal circuits amplify skin inflammation）", "url": "https://www.science.org/doi/10.1126/science.aef7718"},
+    {"title": "《皮肤科学与化妆品功效评价》（刘玮 主编）", "url": ""},
+    {"title": "Cosmeceuticals（Elsner & Maibach 编）", "url": ""}
+  ]
 }

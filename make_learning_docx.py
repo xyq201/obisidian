@@ -21,8 +21,14 @@ content.json 结构（所有字段均可省，按需给）:
         "rows":[["TRPV1 感觉神经","XX","x%","..."]]},
      {"type":"callout", "label":"产品经理视角", "text":"..."}
   ],
-  "footer": "信源：MDPI Cosmetics 2026; Science 2026-03; 个人护理洞察/Givaudan 2026; 《皮肤科学与化妆品功效评价》《Cosmeceuticals》"
+  "footer": "信源：MDPI Cosmetics 2026; Science 2026-03; 个人护理洞察/Givaudan 2026; 《皮肤科学与化妆品功效评价》《Cosmeceuticals》",
+  "references": [
+     {"title":"MDPI Cosmetics 2026 综述：神经美容与皮肤-脑轴", "url":"https://www.mdpi.com/2079-9284/13/3/102"},
+     {"title":"Science：应激神经环路放大皮肤炎症", "url":"https://www.science.org/doi/10.1126/science.aef7718"}
+  ]
 }
+
+references 字段（可选）：列表，每项 {title, url}，在文末生成「参考资料与出处链接」带超链接清单。
 
 设计：A4、中文（微软雅黑）渲染、分级标题、双视角高亮框、规范表格。
 """
@@ -33,6 +39,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+
+# 超链接关系类型（OOXML 标准 URI）
+HYPERLINK_REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink'
 
 CJK = "微软雅黑"
 DARK = RGBColor(0x1F, 0x3A, 0x5F)      # 深蓝标题
@@ -71,6 +80,30 @@ def set_cell_text(cell, text, bold=False, color=None, size=10.5):
         run.font.color.rgb = color
     run.font.size = Pt(size)
     set_cjk(run)
+
+
+def add_hyperlink(paragraph, text, url):
+    """在段落末尾追加一个可点击超链接（w:hyperlink）。"""
+    part = paragraph.part
+    r_id = part.relate_to(url, HYPERLINK_REL, is_external=True)
+    hyperlink = OxmlElement('w:hyperlink')
+    hyperlink.set(qn('r:id'), r_id)
+    new_run = OxmlElement('w:r')
+    rPr = OxmlElement('w:rPr')
+    rStyle = OxmlElement('w:rStyle')
+    rStyle.set(qn('w:val'), 'Hyperlink')
+    rPr.append(rStyle)
+    rFonts = OxmlElement('w:rFonts')
+    for attr in ('w:eastAsia', 'w:ascii', 'w:hAnsi'):
+        rFonts.set(qn(attr), CJK)
+    rPr.append(rFonts)
+    t = OxmlElement('w:t')
+    t.text = text
+    new_run.append(rPr)
+    new_run.append(t)
+    hyperlink.append(new_run)
+    paragraph._p.append(hyperlink)
+    return hyperlink
 
 
 def add_callout(doc, label, text, fill="EAF2F8"):
@@ -167,6 +200,23 @@ def build(doc, data):
         top.set(qn('w:val'), 'single'); top.set(qn('w:sz'), '6'); top.set(qn('w:space'), '1'); top.set(qn('w:color'), 'BFBFBF')
         pbdr.append(top); pPr.append(pbdr)
         rf = f.add_run('信源：' + data['footer']); rf.font.size = Pt(8.5); rf.font.color.rgb = GREY; set_cjk(rf)
+
+    # 参考资料与出处链接（带超链接，置于文末）
+    refs = data.get('references') or []
+    if refs:
+        h = doc.add_paragraph(); h.paragraph_format.space_before = Pt(12); h.paragraph_format.space_after = Pt(4)
+        rh = h.add_run('参考资料与出处链接'); rh.bold = True; rh.font.size = Pt(12.5); rh.font.color.rgb = DARK; set_cjk(rh)
+        for i, ref in enumerate(refs, 1):
+            p = doc.add_paragraph(style='List Number')
+            p.paragraph_format.space_after = Pt(2)
+            title = ref.get('title', '')
+            url = ref.get('url', '')
+            if url:
+                rnum = p.add_run(f'{i}. '); rnum.font.size = Pt(10); set_cjk(rnum)
+                add_hyperlink(p, title, url)
+                rurl = p.add_run('  ' + url); rurl.font.size = Pt(9); rurl.font.color.rgb = GREY; set_cjk(rurl)
+            else:
+                rt = p.add_run(f'{i}. {title}'); rt.font.size = Pt(10); set_cjk(rt)
 
 
 def main():
