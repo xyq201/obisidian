@@ -14,6 +14,11 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$REPO_DIR"
 
+# 沙箱出网代理对 git 大文件传输偶发限速/中断，放宽 http 限速阈值避免被掐断
+git config http.lowSpeedLimit 0 2>/dev/null
+git config http.lowSpeedTime 0 2>/dev/null
+git config http.postBuffer 524288000 2>/dev/null
+
 # ---- 1. 沙箱 DNS/代理自愈：确保 github.com 解析到出网代理放行的真实 IP ----
 ensure_hosts() {
   local need_fix=0
