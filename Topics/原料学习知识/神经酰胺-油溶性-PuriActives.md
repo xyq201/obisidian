@@ -1,6 +1,6 @@
 ---
 date: 2026-07-23
-source: 微信公众号文章《PuriActives® 油溶性神经酰胺》（OCR 全文见 [[Inbox/2026-07-23-purieactives-ceramide]]）
+source: 微信公众号文章《PuriActives® 油溶性神经酰胺》（OCR 全文见 [[灵感库/2026-07-23-purieactives-ceramide]]）
 tags: [原料学习, 成分, 神经酰胺, 纳米递送, 护肤]
 ---
 
@@ -66,5 +66,8 @@ tags: [原料学习, 成分, 神经酰胺, 纳米递送, 护肤]
 - 联系：www.PuriActives.com ｜ Service@puripharm.com
 
 ## 关联
-- 原始碎片：[[Inbox/2026-07-23-purieactives-ceramide]]
+- 原始碎片：[[灵感库/2026-07-23-purieactives-ceramide]]
 - 主题地图：[[Topics/原料学习知识]]
+## 相关增量（周期迭代自动建）
+- [[灵感库/DMIS-CerNP-Review-20260826]]
+- [[灵感库/腾讯文档学习心得/2026-08-29-皮肤屏障动态重塑与修复生理学学习心得]]
