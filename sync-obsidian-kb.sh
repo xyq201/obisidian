@@ -20,20 +20,31 @@ git config http.lowSpeedTime 0 2>/dev/null
 git config http.postBuffer 524288000 2>/dev/null
 
 # ---- 1. 沙箱 DNS/代理自愈：动态探测出网代理放行的 GitHub 前端 IP 并覆盖写 ----
+# 关键：用真实 git 上传包流量（info/refs?service=git-upload-pack）测连通，
+#       而非 tiny 首页请求——避免挑中"能过小请求、扛不住推送"的假活 IP。
+REPO_PATH="$(git config --get remote.origin.url 2>/dev/null | sed -E 's#https://github.com/##; s#\.git$##')"
+REPO_PATH="${REPO_PATH:-xyq201/obisidian}"
+gh_probe() { # $1=ip；返回0表示可稳定承载真实 git 流量
+  local ip="$1" s=0
+  s=$(curl -sS -m 12 --resolve "github.com:443:$ip" -o /tmp/_ghprobe \
+        "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null \
+        && wc -c < /tmp/_ghprobe)
+  [ "${s:-0}" -gt 100 ]
+}
 ensure_hosts() {
   local cur; cur=$(getent hosts github.com 2>/dev/null | awk '{print $1; exit}')
   # 候选放行 IP（代理放行网段，随出网策略可增减）
-  local cands="140.82.114.3 140.82.116.3 140.82.121.3 140.82.112.3 140.82.113.3 140.82.113.5 140.82.113.6"
+  local cands="140.82.116.3 140.82.112.3 140.82.113.3 140.82.114.3 140.82.121.3 140.82.113.5 140.82.113.6"
   local ok=""
-  # 先测当前解析是否可达
-  if [ -n "$cur" ] && curl -sS -m 10 --resolve "github.com:443:$cur" -o /dev/null "https://github.com" 2>/dev/null; then
+  # 先测当前解析是否可达（真实 git 流量）
+  if [ -n "$cur" ] && gh_probe "$cur"; then
     ok="$cur"
   fi
-  # 否则遍历候选，挑第一个可达的
+  # 否则遍历候选，挑第一个能稳定承载 git 流量的
   if [ -z "$ok" ]; then
     local ip
     for ip in $cands; do
-      if curl -sS -m 8 --resolve "github.com:443:$ip" -o /dev/null "https://github.com" 2>/dev/null; then ok="$ip"; break; fi
+      if gh_probe "$ip"; then ok="$ip"; break; fi
     done
   fi
   if [ -z "$ok" ]; then
