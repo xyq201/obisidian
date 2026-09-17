@@ -24,23 +24,28 @@ git config http.postBuffer 524288000 2>/dev/null
 #       而非 tiny 首页请求——避免挑中"能过小请求、扛不住推送"的假活 IP。
 REPO_PATH="$(git config --get remote.origin.url 2>/dev/null | sed -E 's#https://github.com/##; s#\.git$##')"
 REPO_PATH="${REPO_PATH:-xyq201/obisidian}"
-gh_probe() { # $1=ip；返回0表示可稳定承载真实 git 流量
-  local ip="$1" s=0
-  s=$(curl -sS -m 12 --resolve "github.com:443:$ip" -o /tmp/_ghprobe \
-        "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null \
-        && wc -c < /tmp/_ghprobe)
-  [ "${s:-0}" -gt 100 ]
+gh_probe() { # $1=ip；返回0表示可稳定承载真实 git 流量（含重试，避免瞬时限流误判）
+  local ip="$1" s=0 try=0
+  for try in 1 2 3; do
+    s=$(curl -sS --retry 1 -m 15 --resolve "github.com:443:$ip" -o /tmp/_ghprobe \
+          "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null \
+          && wc -c < /tmp/_ghprobe)
+    [ "${s:-0}" -gt 300 ] && return 0
+  done
+  return 1
 }
 ensure_hosts() {
   local cur; cur=$(getent hosts github.com 2>/dev/null | awk '{print $1; exit}')
-  # 候选放行 IP（代理放行网段，随出网策略可增减）
+  # 优先 proven IP：~/.user_hosts 中已验证稳定的 github.com 解析（持久、可靠，避免盲选假活 IP）
+  local proven=""; proven=$(awk '$2=="github.com"{print $1; exit}' ~/.user_hosts 2>/dev/null)
   local cands="140.82.116.3 140.82.112.3 140.82.113.3 140.82.114.3 140.82.121.3 140.82.113.5 140.82.113.6"
+  [ -n "$proven" ] && cands="$proven $cands"
   local ok=""
-  # 先测当前解析是否可达（真实 git 流量）
+  # 先测当前解析是否可达（真实 git 流量 + 重试）
   if [ -n "$cur" ] && gh_probe "$cur"; then
     ok="$cur"
   fi
-  # 否则遍历候选，挑第一个能稳定承载 git 流量的
+  # 否则遍历候选（proven 优先），挑第一个能稳定承载 git 流量的
   if [ -z "$ok" ]; then
     local ip
     for ip in $cands; do
@@ -67,8 +72,13 @@ ensure_hosts() {
 
 # ---- 2. 连通性自检 ----
 check_conn() {
-  if ! curl -sS -m 12 -o /dev/null "https://api.github.com" 2>/dev/null; then
+  if ! curl -sS -m 15 -o /dev/null "https://api.github.com" 2>/dev/null; then
     echo "[sync] 错误：无法连通 GitHub（api.github.com）。请检查网络/代理/PAT。" >&2
+    exit 3
+  fi
+  # 同时验证 git 主站可达（push/pull 走 github.com，被封则直接失败）
+  if ! curl -sS -m 15 -o /dev/null "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null; then
+    echo "[sync] 错误：github.com 主站不可达（push/pull 将失败），请检查 /etc/hosts 与出网代理。" >&2
     exit 3
   fi
 }
