@@ -70,17 +70,21 @@ ensure_hosts() {
   echo "[sync] hosts 已修复为 $ok"
 }
 
-# ---- 2. 连通性自检 ----
+# ---- 2. 连通性自检（带重试：代理对 GitHub 前端为间歇性瞬时限流，单次探测会误杀）----
 check_conn() {
-  if ! curl -sS -m 15 -o /dev/null "https://api.github.com" 2>/dev/null; then
-    echo "[sync] 错误：无法连通 GitHub（api.github.com）。请检查网络/代理/PAT。" >&2
-    exit 3
-  fi
-  # 同时验证 git 主站可达（push/pull 走 github.com，被封则直接失败）
-  if ! curl -sS -m 15 -o /dev/null "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null; then
-    echo "[sync] 错误：github.com 主站不可达（push/pull 将失败），请检查 /etc/hosts 与出网代理。" >&2
-    exit 3
-  fi
+  local ip; ip=$(getent hosts github.com 2>/dev/null | awk '{print $1; exit}')
+  local ok=0 i
+  # api.github.com 连通（重试 3 次）
+  for i in 1 2 3; do
+    if curl -sS -m 15 -o /dev/null "https://api.github.com" 2>/dev/null; then ok=1; break; fi
+  done
+  [ "$ok" = 0 ] && { echo "[sync] 错误：无法连通 GitHub（api.github.com）。请检查网络/代理/PAT。" >&2; exit 3; }
+  # github.com 主站（用当前解析 IP + --resolve，重试 3 次，容忍瞬时限流）
+  ok=0
+  for i in 1 2 3; do
+    if curl -sS -m 15 --resolve "github.com:443:${ip}" -o /dev/null "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null; then ok=1; break; fi
+  done
+  [ "$ok" = 0 ] && { echo "[sync] 错误：github.com 主站不可达（push/pull 将失败），请检查 /etc/hosts 与出网代理。" >&2; exit 3; }
 }
 
 # ---- 2.5 确保 gh 已登录（自动化独立会话可能无登录态）----
@@ -127,7 +131,15 @@ case "$MODE" in
     fi
     echo "[sync] git pull --rebase origin main"
     git pull --rebase origin main || { echo "[sync] pull/rebase 失败，请手动解决冲突后重试。" >&2; exit 4; }
-    git push origin main
+    # 重试推送：出网代理对 GitHub 前端为间歇性瞬时限流，单次 push 易被 GnuTLS 中断
+    n=0; ok=1
+    for n in 1 2 3 4 5; do
+      if git push origin main 2>/tmp/_pusherr; then ok=0; echo "[sync] push 成功（第 $n 次）"; break; fi
+      echo "[sync] push 第 $n 次失败：$(tail -2 /tmp/_pusherr)"
+      ensure_hosts   # 重新探测当前可用 IP 写回 /etc/hosts
+      sleep 5
+    done
+    [ "$ok" = 0 ] || { echo "[sync] push 反复失败，请手动重试。" >&2; exit 6; }
     echo "[sync] 已推送：$(git rev-parse --short HEAD)"
     ;;
   *)
