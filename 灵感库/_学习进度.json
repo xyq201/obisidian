@@ -1,13 +1,54 @@
 {
   "note": "每日学习主题覆盖进度（防重复用，优先于扫描文件名）。seq 对应提示词「主题轮换清单」序号。",
   "learned": [
-    {"seq": 1, "date": "2026-09-13", "slug": "neurocosmetics", "title": "神经美容与皮肤-脑轴"},
-    {"seq": 2, "date": "2026-09-13", "slug": "postprocedure", "title": "医美术后屏障修护与泛红管理"},
-    {"seq": 3, "date": "2026-09-14", "slug": "plla", "title": "PLLA 聚左旋乳酸与胶原再生"},
-    {"seq": 4, "date": "2026-09-15", "slug": "skin-barrier-ceramide", "title": "皮肤屏障结构、神经酰胺与砖墙模型"},
-    {"seq": 5, "date": "2026-09-16", "slug": "transdermal-delivery", "title": "透皮递送与促渗技术"},
-    {"seq": 6, "date": "2026-09-17", "slug": "photoaging-protection", "title": "光老化机制与光防护"},
-    {"seq": 7, "date": "2026-09-18", "slug": "melanin", "title": "黑色素生成与分区美白/色斑"}
+    {
+      "seq": 1,
+      "date": "2026-09-13",
+      "slug": "neurocosmetics",
+      "title": "神经美容与皮肤-脑轴"
+    },
+    {
+      "seq": 2,
+      "date": "2026-09-13",
+      "slug": "postprocedure",
+      "title": "医美术后屏障修护与泛红管理"
+    },
+    {
+      "seq": 3,
+      "date": "2026-09-14",
+      "slug": "plla",
+      "title": "PLLA 聚左旋乳酸与胶原再生"
+    },
+    {
+      "seq": 4,
+      "date": "2026-09-15",
+      "slug": "skin-barrier-ceramide",
+      "title": "皮肤屏障结构、神经酰胺与砖墙模型"
+    },
+    {
+      "seq": 5,
+      "date": "2026-09-16",
+      "slug": "transdermal-delivery",
+      "title": "透皮递送与促渗技术"
+    },
+    {
+      "seq": 6,
+      "date": "2026-09-17",
+      "slug": "photoaging-protection",
+      "title": "光老化机制与光防护"
+    },
+    {
+      "seq": 7,
+      "date": "2026-09-18",
+      "slug": "melanin",
+      "title": "黑色素生成与分区美白/色斑"
+    },
+    {
+      "seq": 8,
+      "date": "2026-09-19",
+      "slug": "acne",
+      "title": "痤疮的免疫-代谢轴与屏障修护"
+    }
   ],
-  "next_seq": 8
+  "next_seq": 9
 }
