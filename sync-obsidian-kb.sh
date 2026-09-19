@@ -78,13 +78,13 @@ check_conn() {
   for i in 1 2 3; do
     if curl -sS -m 15 -o /dev/null "https://api.github.com" 2>/dev/null; then ok=1; break; fi
   done
-  [ "$ok" = 0 ] && { echo "[sync] 错误：无法连通 GitHub（api.github.com）。请检查网络/代理/PAT。" >&2; exit 3; }
+  [ "$ok" = 0 ] && { echo "[sync] 警告：暂无法连通 GitHub（api.github.com），稍后实际 git 操作会重试。" >&2; return 1; }
   # github.com 主站（用当前解析 IP + --resolve，重试 3 次，容忍瞬时限流）
   ok=0
   for i in 1 2 3; do
     if curl -sS -m 15 --resolve "github.com:443:${ip}" -o /dev/null "https://github.com/${REPO_PATH}.git/info/refs?service=git-upload-pack" 2>/dev/null; then ok=1; break; fi
   done
-  [ "$ok" = 0 ] && { echo "[sync] 错误：github.com 主站不可达（push/pull 将失败），请检查 /etc/hosts 与出网代理。" >&2; exit 3; }
+  [ "$ok" = 0 ] && { echo "[sync] 警告：github.com 主站暂不可达，实际 git 操作将重试/兜底。" >&2; return 1; }
 }
 
 # ---- 2.5 确保 gh 已登录（自动化独立会话可能无登录态）----
@@ -108,13 +108,18 @@ MODE="${1:-sync}"
 MSG="${2:-kb: 自动同步 $(date +%F)}"
 
 ensure_hosts
-check_conn
+check_conn || true
 ensure_gh
 
 case "$MODE" in
   pull)
     echo "[sync] git pull --rebase origin main"
     git pull --rebase origin main
+    ;;
+  hosts)
+    # 仅重新探测可用 IP 并写回 /etc/hosts + ~/.user_hosts（供推送循环轮换，不报错退出）
+    ensure_hosts
+    exit 0
     ;;
   status)
     echo "[sync] 本地 vs 远程："
