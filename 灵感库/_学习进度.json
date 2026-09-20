@@ -54,7 +54,13 @@
       "date": "2026-09-20",
       "slug": "antioxidant-network",
       "title": "抗氧化网络、自由基与抗糖化"
+    },
+    {
+      "seq": 10,
+      "date": "2026-09-21",
+      "slug": "sensitive-skin",
+      "title": "炎症与敏感肌（神经源性炎症TRPV1）"
     }
   ],
-  "next_seq": 10
+  "next_seq": 11
 }
