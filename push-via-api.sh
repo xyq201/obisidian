@@ -84,6 +84,10 @@ done
 [ "${BREAK_OK:-0}" = 1 ] || { echo "[api] 3 次尝试均失败" >&2; exit 10; }
 
 # 7. 本地对齐远程（内容一致；丢弃已被 API 提交替代的本地领先提交）
-git fetch origin main --quiet
-git reset --hard "origin/$BRANCH" --quiet
-echo "[api] 本地已对齐远程 $(git rev-parse --short HEAD)，完成。"
+if git fetch "origin" "$BRANCH" --quiet 2>/dev/null; then
+  git reset --hard "origin/$BRANCH" --quiet
+  echo "[api] 本地已对齐远程 $(git rev-parse --short HEAD)，完成。"
+else
+  # 推送已成功，仅本地对齐因网络阻断暂缓，不算失败
+  echo "[api] 推送已成功；本地对齐待网络恢复后执行：git fetch origin && git reset --hard origin/$BRANCH"
+fi
