@@ -1,6 +1,82 @@
 {
-<<<<<<< HEAD
-  "note": "每日学习主题覆盖进度（防重复用，优先于扫描文件名）。seq 对应提示词「主题轮换清单」序号。",
+  "next_seq": 11,
+  "rotation": [
+    {
+      "seq": 1,
+      "slug": "neurocosmetics",
+      "title": "神经美容与皮肤-脑轴"
+    },
+    {
+      "seq": 2,
+      "slug": "postprocedure",
+      "title": "医美术后屏障修护与泛红管理"
+    },
+    {
+      "seq": 3,
+      "slug": "plla",
+      "title": "PLLA 聚左旋乳酸与胶原再生"
+    },
+    {
+      "seq": 4,
+      "slug": "skin-barrier-ceramide",
+      "title": "皮肤屏障结构、神经酰胺与砖墙模型"
+    },
+    {
+      "seq": 5,
+      "slug": "transdermal-delivery",
+      "title": "透皮递送与促渗技术"
+    },
+    {
+      "seq": 6,
+      "slug": "photoaging-protection",
+      "title": "光老化机制与光防护"
+    },
+    {
+      "seq": 7,
+      "slug": "melanin",
+      "title": "黑色素生成与分区美白/色斑"
+    },
+    {
+      "seq": 8,
+      "slug": "acne-immune-metabolic",
+      "title": "痤疮的免疫-代谢轴与屏障修护"
+    },
+    {
+      "seq": 9,
+      "slug": "antioxidant-network",
+      "title": "抗氧化网络、自由基与抗糖化"
+    },
+    {
+      "seq": 10,
+      "slug": "neurogenic-inflammation-sensitive",
+      "title": "炎症与敏感肌（神经源性炎症/TRPV1）"
+    },
+    {
+      "seq": 11,
+      "slug": "scalp-microbiome",
+      "title": "洗护与头皮微生态"
+    },
+    {
+      "seq": 12,
+      "slug": "lip-care",
+      "title": "唇部护理与唇纹机制"
+    },
+    {
+      "seq": 13,
+      "slug": "makeup-sensory-powder",
+      "title": "彩妆肤感、持妆与粉体技术"
+    },
+    {
+      "seq": 14,
+      "slug": "efficacy-evaluation-trial",
+      "title": "化妆品功效评价与人体试验设计"
+    },
+    {
+      "seq": 15,
+      "slug": "ingredient-innovation",
+      "title": "原料创新趋势（肽/发酵/植物外泌体/重组胶原）"
+    }
+  ],
   "learned": [
     {
       "seq": 1,
@@ -47,53 +123,20 @@
     {
       "seq": 8,
       "date": "2026-09-19",
-      "slug": "acne",
+      "slug": "acne-immune-metabolic",
       "title": "痤疮的免疫-代谢轴与屏障修护"
     },
     {
       "seq": 9,
-      "date": "2026-09-20",
+      "date": "2026-09-21",
       "slug": "antioxidant-network",
       "title": "抗氧化网络、自由基与抗糖化"
     },
     {
       "seq": 10,
-      "date": "2026-09-21",
-      "slug": "sensitive-skin",
-      "title": "炎症与敏感肌（神经源性炎症TRPV1）"
+      "date": "2026-09-22",
+      "slug": "neurogenic-inflammation-sensitive",
+      "title": "炎症与敏感肌（神经源性炎症/TRPV1）"
     }
-  ],
-  "next_seq": 11
-}
-=======
-  "next_seq": 10,
-  "rotation": [
-    {"seq": 1, "slug": "neurocosmetics", "title": "神经美容与皮肤-脑轴"},
-    {"seq": 2, "slug": "postprocedure", "title": "医美术后屏障修护与泛红管理"},
-    {"seq": 3, "slug": "plla", "title": "PLLA 聚左旋乳酸与胶原再生"},
-    {"seq": 4, "slug": "skin-barrier-ceramide", "title": "皮肤屏障结构、神经酰胺与砖墙模型"},
-    {"seq": 5, "slug": "transdermal-delivery", "title": "透皮递送与促渗技术"},
-    {"seq": 6, "slug": "photoaging-protection", "title": "光老化机制与光防护"},
-    {"seq": 7, "slug": "melanin", "title": "黑色素生成与分区美白/色斑"},
-    {"seq": 8, "slug": "acne-immune-metabolic", "title": "痤疮的免疫-代谢轴与屏障修护"},
-    {"seq": 9, "slug": "antioxidant-network", "title": "抗氧化网络、自由基与抗糖化"},
-    {"seq": 10, "slug": "neurogenic-inflammation-sensitive", "title": "炎症与敏感肌（神经源性炎症/TRPV1）"},
-    {"seq": 11, "slug": "scalp-microbiome", "title": "洗护与头皮微生态"},
-    {"seq": 12, "slug": "lip-care", "title": "唇部护理与唇纹机制"},
-    {"seq": 13, "slug": "makeup-sensory-powder", "title": "彩妆肤感、持妆与粉体技术"},
-    {"seq": 14, "slug": "efficacy-evaluation-trial", "title": "化妆品功效评价与人体试验设计"},
-    {"seq": 15, "slug": "ingredient-innovation", "title": "原料创新趋势（肽/发酵/植物外泌体/重组胶原）"}
-  ],
-  "learned": [
-    {"seq": 1, "date": "2026-09-13", "slug": "neurocosmetics", "title": "神经美容与皮肤-脑轴"},
-    {"seq": 2, "date": "2026-09-13", "slug": "postprocedure", "title": "医美术后屏障修护与泛红管理"},
-    {"seq": 3, "date": "2026-09-14", "slug": "plla", "title": "PLLA 聚左旋乳酸与胶原再生"},
-    {"seq": 4, "date": "2026-09-15", "slug": "skin-barrier-ceramide", "title": "皮肤屏障结构、神经酰胺与砖墙模型"},
-    {"seq": 5, "date": "2026-09-16", "slug": "transdermal-delivery", "title": "透皮递送与促渗技术"},
-    {"seq": 6, "date": "2026-09-17", "slug": "photoaging-protection", "title": "光老化机制与光防护"},
-    {"seq": 7, "date": "2026-09-18", "slug": "melanin", "title": "黑色素生成与分区美白/色斑"},
-    {"seq": 8, "date": "2026-09-19", "slug": "acne-immune-metabolic", "title": "痤疮的免疫-代谢轴与屏障修护"},
-    {"seq": 9, "date": "2026-09-21", "slug": "antioxidant-network", "title": "抗氧化网络、自由基与抗糖化"}
   ]
 }
->>>>>>> e2e0229 (kb: 每日系统学习(灵感库) 2026-09-21 抗氧化网络、自由基与抗糖化 (海报风 Word/HTML, 2配图))
