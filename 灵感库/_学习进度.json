@@ -1,5 +1,5 @@
 {
-  "next_seq": 12,
+  "next_seq": 13,
   "rotation": [
     {
       "seq": 1,
@@ -143,6 +143,12 @@
       "date": "2026-09-23",
       "slug": "scalp-microbiome",
       "title": "洗护与头皮微生态"
+    },
+    {
+      "seq": 12,
+      "date": "2026-09-24",
+      "slug": "lip-care",
+      "title": "唇部护理与唇纹机制"
     }
   ]
 }
