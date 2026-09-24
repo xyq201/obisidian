@@ -1,5 +1,5 @@
 {
-  "next_seq": 13,
+  "next_seq": 14,
   "rotation": [
     {
       "seq": 1,
@@ -149,6 +149,12 @@
       "date": "2026-09-24",
       "slug": "lip-care",
       "title": "唇部护理与唇纹机制"
+    },
+    {
+      "seq": 13,
+      "date": "2026-09-25",
+      "slug": "makeup-sensory-powder",
+      "title": "彩妆肤感、持妆与粉体技术"
     }
   ]
 }
