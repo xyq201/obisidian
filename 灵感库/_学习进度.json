@@ -1,5 +1,5 @@
 {
-  "next_seq": 15,
+  "next_seq": 16,
   "rotation": [
     {
       "seq": 1,
@@ -161,6 +161,12 @@
       "date": "2026-09-26",
       "slug": "efficacy-evaluation-trial",
       "title": "化妆品功效评价与人体试验设计"
+    },
+    {
+      "seq": 15,
+      "date": "2026-10-26",
+      "slug": "ingredient-innovation",
+      "title": "原料创新趋势（肽/发酵/植物外泌体/重组胶原）"
     }
   ]
 }
