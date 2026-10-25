@@ -67,14 +67,14 @@ echo "NEXT_SEQ=$NEXT"
 ## 2. 选题（防重复）
 
 内置 15 主题清单（按 seq 取，1-15 循环）：
-1 神经美容｜2 医美术后修护｜3 PLLA/聚左旋乳酸｜4 屏障与神经酰胺｜5 透皮递送｜6 光老化｜7 黑色素与美白｜8 痤疮｜9 抗氧化网络与抗糖化｜10 炎症敏感肌(TRPV1)｜11 头皮微生态｜12 唇部护理｜13 彩妆肤感/持妆/粉体｜14 功效评价方法｜15 原料创新趋势。
-优先用户聚焦方向（神经美容/医美术后/PLLA）再轮换。
+1 神经美容｜2 医术后修护｜3 PLLA/聚左旋乳酸｜4 屏障与神经酰胺｜5 透皮递送｜6 光老化｜7 黑色素与美白｜8 痤疮｜9 抗氧化网络与抗糖化｜10 炎症敏感肌(TRPV1)｜11 头皮微生态｜12 唇部护理｜13 彩妆肤感/持妆/粉体｜14 功效评价方法｜15 原料创新趋势。
+优先用户聚焦方向（神经美容/医术后修护/PLLA）优先排前，但整体按序号循环、防重复。
 
-根据 `NEXT` 取主题，并定义：
+计算实际序号（超过 15 自动回环，永不越界）：`SEQ=$(( (NEXT-1) % 15 + 1 ))`，`export SEQ`；据此从清单取第 SEQ 个主题，并定义：
 ```
 SLUG=<本主题英文slug，如 makeup-sensory-powder>
 DATE=$(date +%F)
-THEME=<中文主题名>
+THEME=<中文主题名，对应清单第 $SEQ 项>
 ```
 
 ---
@@ -237,11 +237,11 @@ gh_api_put "灵感库/$DATE-$SLUG.html" "/workspace/$DATE-$SLUG.html" "kb: 每�
 ```
 if [ -n "$PROG" ]; then
   python3.11 - <<'PY'
-import json
+import json, os
 p='/workspace/_prog.json'
 d=json.load(open(p))
 d['next_seq']=int(d.get('next_seq',1))+1
-d.setdefault('learned',[]).append({'seq':__import__('os').environ.get('NEXT',''),'date':__import__('os').environ.get('DATE',''),'slug':__import__('os').environ.get('SLUG',''),'title':__import__('os').environ.get('THEME','')})
+d.setdefault('learned',[]).append({'seq':os.environ.get('SEQ',''),'date':os.environ.get('DATE',''),'slug':os.environ.get('SLUG',''),'title':os.environ.get('THEME','')})
 json.dump(d,open(p,'w'),ensure_ascii=False,indent=2)
 print('progress next_seq=',d['next_seq'])
 PY
