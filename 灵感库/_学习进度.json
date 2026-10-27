@@ -1,5 +1,5 @@
 {
-  "next_seq": 17,
+  "next_seq": 18,
   "rotation": [
     {
       "seq": 1,
@@ -173,6 +173,12 @@
       "date": "2026-10-28",
       "slug": "neurocosmetics",
       "title": "神经美容"
+    },
+    {
+      "seq": "2",
+      "date": "2026-10-28",
+      "slug": "post-procedure-repair",
+      "title": "医术后修护"
     }
   ]
 }
