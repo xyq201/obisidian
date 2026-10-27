@@ -1,5 +1,5 @@
 {
-  "next_seq": 16,
+  "next_seq": 17,
   "rotation": [
     {
       "seq": 1,
@@ -167,6 +167,12 @@
       "date": "2026-10-26",
       "slug": "ingredient-innovation",
       "title": "原料创新趋势（肽/发酵/植物外泌体/重组胶原）"
+    },
+    {
+      "seq": "1",
+      "date": "2026-10-28",
+      "slug": "neurocosmetics",
+      "title": "神经美容"
     }
   ]
 }
