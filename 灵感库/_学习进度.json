@@ -1,5 +1,5 @@
 {
-  "next_seq": 19,
+  "next_seq": 20,
   "rotation": [
     {
       "seq": 1,
@@ -185,6 +185,12 @@
       "date": "2026-10-29",
       "slug": "plla-poly-l-lactic-acid",
       "title": "PLLA/聚左旋乳酸"
+    },
+    {
+      "seq": 4,
+      "date": "2026-10-30",
+      "slug": "barrier-ceramide",
+      "title": "屏障与神经酰胺"
     }
   ]
 }
