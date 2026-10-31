@@ -1,5 +1,5 @@
 {
-  "next_seq": 20,
+  "next_seq": 21,
   "rotation": [
     {
       "seq": 1,
@@ -191,6 +191,12 @@
       "date": "2026-10-30",
       "slug": "barrier-ceramide",
       "title": "屏障与神经酰胺"
+    },
+    {
+      "seq": "5",
+      "date": "2026-10-31",
+      "slug": "transdermal-delivery",
+      "title": "透皮递送"
     }
   ]
 }
