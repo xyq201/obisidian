@@ -1,5 +1,5 @@
 {
-  "next_seq": 21,
+  "next_seq": 22,
   "rotation": [
     {
       "seq": 1,
@@ -197,6 +197,12 @@
       "date": "2026-10-31",
       "slug": "transdermal-delivery",
       "title": "透皮递送"
+    },
+    {
+      "seq": "6",
+      "date": "2026-11-01",
+      "slug": "photoaging",
+      "title": "光老化：UV、ROS 与胶原降解"
     }
   ]
 }
